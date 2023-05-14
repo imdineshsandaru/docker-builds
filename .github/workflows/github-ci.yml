@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      docker_registry: docker.io
+      DOCKER_REGISTRY: docker.io
 
     steps:
       - name: Checkout code
