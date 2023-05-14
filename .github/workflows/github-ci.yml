@@ -25,24 +25,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Install base64 and jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo apt-get install -y coreutils
 
       - name: Build and push Docker images
         run: |
           CONFIG=$(cat config.json)
-          for row in $(echo "${CONFIG}" | jq -r '.images[] | @base64'); do
-            _jq() {
-              echo "${row}" | base64 --decode | jq -r "${1}"
-            }
-
-            IMAGE_NAME=$(_jq '.name')
-            IMAGE_PATH=$(_jq '.path')
-            IMAGE_VERSION=$(_jq '.version')
-
-            IMAGE_NAME=$(_jq '.name')
-            PATH=$(_jq '.path')
-            VERSION=$(_jq '.version')
+          for image in $(echo "${CONFIG}" | jq -r '.images[] | @base64'); do
+            IMAGE=$(echo "${image}" | base64 --decode | jq -r '.')
+            IMAGE_NAME=$(echo "${IMAGE}" | jq -r '.name')
+            PATH=$(echo "${IMAGE}" | jq -r '.path')
+            VERSION=$(echo "${IMAGE}" | jq -r '.version')
 
             # Check if image with version exists in registry
             if docker manifest inspect $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION > /dev/null 2>&1; then
