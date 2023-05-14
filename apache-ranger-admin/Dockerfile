@@ -18,8 +18,7 @@ ADD https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.30/mysql-conne
 
 COPY ranger-entrypoint.sh /opt
 
-RUN curl -L https://github.com/aakashnand/trino-ranger-demo/releases/download/trino-ranger-demo-v1.0/ranger-2.1.0-admin.tar.gz && \
-    cp ranger-2.1.0-admin.tar.gz /opt
+ADD https://github.com/aakashnand/trino-ranger-demo/releases/download/trino-ranger-demo-v1.0/ranger-2.1.0-admin.tar.gz /opt
 
 RUN cd /opt \
  && tar zxvf ranger-${RANGER_VERSION}-admin.tar.gz \
