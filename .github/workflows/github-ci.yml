@@ -28,16 +28,17 @@ jobs:
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Read YAML file
-        run: |
-          IMAGES=$(cat config.yml | jq -r '.images[] | @base64')
-
       - name: Build and push Docker images
         run: |
-          for IMAGE in $IMAGES; do
+          CONFIG=$(cat config.json)
+          for row in $(echo "${CONFIG}" | jq -r '.images[] | @base64'); do
             _jq() {
-              echo ${IMAGE} | base64 --decode | jq -r ${1}
+              echo "${row}" | base64 --decode | jq -r "${1}"
             }
+
+            IMAGE_NAME=$(_jq '.name')
+            IMAGE_PATH=$(_jq '.path')
+            IMAGE_VERSION=$(_jq '.version')
 
             IMAGE_NAME=$(_jq '.name')
             PATH=$(_jq '.path')

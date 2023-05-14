@@ -1,5 +1,0 @@
-# List of Docker images to build and push
-images:
-  - name: apache-ranger-admin
-    path: ./apache-ranger-admin
-    version: 1.0.0
