@@ -37,11 +37,11 @@ jobs:
           sudo apt-get install -y jq
           sudo apt-get install -y coreutils
           CONFIG=$(cat config.json)
-          for image in $(echo "${CONFIG}" | jq -r '.images[] | @base64'); do
+          for image in $(echo "${CONFIG}" | /usr/bin/jq -r '.images[] | @base64'); do
             IMAGE=$(echo "${image}" | base64 --decode | jq -r '.')
-            IMAGE_NAME=$(echo "${IMAGE}" | jq -r '.name')
-            PATH=$(echo "${IMAGE}" | jq -r '.path')
-            VERSION=$(echo "${IMAGE}" | jq -r '.version')
+            IMAGE_NAME=$(echo "${IMAGE}" | /usr/bin/jq -r '.name')
+            PATH=$(echo "${IMAGE}" | /usr/bin/jq -r '.path')
+            VERSION=$(echo "${IMAGE}" | /usr/bin/jq -r '.version')
 
             # Check if image with version exists in registry
             if docker manifest inspect $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION > /dev/null 2>&1; then
