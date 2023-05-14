@@ -25,12 +25,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install base64 and jq
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          sudo apt-get install -y coreutils
-
       - name: Install Docker CLI
         run: |
           sudo apt-get update
@@ -42,14 +36,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-      - name: Install Docker
-        uses: docker/setup-docker@v2
-
       - name: Build and push Docker images
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq
-          sudo apt-get install -y coreutils
           CONFIG=$(cat config.json)
           for image in $(echo "${CONFIG}" | /usr/bin/jq -r '.images[] | @base64'); do
             IMAGE=$(echo "${image}" | base64 --decode | jq -r '.')
@@ -58,12 +46,12 @@ jobs:
             VERSION=$(echo "${IMAGE}" | /usr/bin/jq -r '.version')
 
             # Check if image with version exists in registry
-            if docker manifest inspect $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION > /dev/null 2>&1; then
+            if /usr/bin/docker manifest inspect $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION > /dev/null 2>&1; then
               echo "Image $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION already exists. Skipping build and push."
             else
               # Build and push Docker image
-              docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION $PATH
-              docker push $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION
+              /usr/bin/docker build -t $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION $PATH
+              /usr/bin/docker push $DOCKER_REGISTRY/$IMAGE_NAME:$VERSION
             fi
           done
 
