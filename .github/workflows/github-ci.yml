@@ -33,6 +33,9 @@ jobs:
 
       - name: Build and push Docker images
         run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo apt-get install -y coreutils
           CONFIG=$(cat config.json)
           for image in $(echo "${CONFIG}" | jq -r '.images[] | @base64'); do
             IMAGE=$(echo "${image}" | base64 --decode | jq -r '.')
