@@ -42,6 +42,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
+      - name: Install Docker
+        uses: docker/setup-docker@v2
+
       - name: Build and push Docker images
         run: |
           sudo apt-get update
