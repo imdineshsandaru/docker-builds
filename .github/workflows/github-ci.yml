@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DOCKER_REGISTRY: docker.io
+      DOCKER_REGISTRY: egdsandaru
 
     steps:
       - name: Checkout code
